@@ -1,4 +1,4 @@
-# Documentação da Biblioteca GrossHub
+# Documentação da Biblioteca GrossHub 100% IA
 
 Esta documentação descreve como usar a biblioteca `GrossHub` para criar interfaces de usuário dinâmicas e modulares no Roblox.
 
