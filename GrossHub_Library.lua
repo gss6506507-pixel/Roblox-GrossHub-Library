@@ -40,10 +40,10 @@ local Theme = {
     TabBackground = Color3.fromRGB(10, 30, 60),
     TabTransparency = 0.5,
     Text = Color3.fromRGB(255, 255, 255),
-    TextDark = Color3.fromRGB(150, 150, 150),
+    TextDark = Color3.fromRGB(180, 180, 180),
     Section = Color3.fromRGB(25, 25, 30),
     Element = Color3.fromRGB(30, 30, 35),
-    Stroke = Color3.fromRGB(40, 40, 45),
+    Stroke = Color3.fromRGB(45, 45, 50),
     SliderHandle = Color3.fromRGB(255, 255, 255)
 }
 
@@ -363,7 +363,6 @@ function GrossHub.CreateWindow(title)
                 TrackConnection(UserInputService.InputBegan:Connect(function(input, gp) if not IsClosing and isBinding and not gp then local key = (input.UserInputType == Enum.UserInputType.Keyboard) and input.KeyCode.Name or "NONE" KeybindButton.Text, isBinding = key, false callback(key) end end))
             end
             
-            -- EXPOR AS FUNÇÕES NO OBJETO SECTION
             Section.CreateButton = Section.CreateButton
             Section.CreateSlider = Section.CreateSlider
             Section.CreateToggle = Section.CreateToggle
