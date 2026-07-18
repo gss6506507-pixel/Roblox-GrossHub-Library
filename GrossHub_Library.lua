@@ -54,22 +54,15 @@ local function Create(class, props)
     return obj
 end
 
--- Efeito visual de clique para botões
 local function AddClickEffect(button)
     button.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            TweenService:Create(button, TweenInfo.new(0.1, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-                BackgroundColor3 = Theme.Accent,
-                BackgroundTransparency = 0.3
-            }):Play()
+            TweenService:Create(button, TweenInfo.new(0.1, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), { BackgroundColor3 = Theme.Accent, BackgroundTransparency = 0.3 }):Play()
         end
     end)
     button.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            TweenService:Create(button, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-                BackgroundColor3 = Theme.Element,
-                BackgroundTransparency = 0
-            }):Play()
+            TweenService:Create(button, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), { BackgroundColor3 = Theme.Element, BackgroundTransparency = 0 }):Play()
         end
     end)
 end
@@ -82,9 +75,7 @@ local function MakeDraggable(frame, dragHandle, extraFrames)
     local lerpFactor = 0.15
     local targetPos = frame.Position
     local extraTargetPositions = {}
-
     for _, extra in ipairs(extraFrames) do extraTargetPositions[extra] = extra.Position end
-
     local function update(input)
         local delta = input.Position - dragStart
         targetPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
@@ -92,7 +83,6 @@ local function MakeDraggable(frame, dragHandle, extraFrames)
             extraTargetPositions[extraFrame] = UDim2.new(extraStartPos.X.Scale, extraStartPos.X.Offset + delta.X, extraStartPos.Y.Scale, extraStartPos.Y.Offset + delta.Y)
         end
     end
-
     dragHandle.InputBegan:Connect(function(input)
         if IsClosing then return end
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -102,7 +92,6 @@ local function MakeDraggable(frame, dragHandle, extraFrames)
             connection = input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then dragging = false connection:Disconnect() end end)
         end
     end)
-
     dragHandle.InputChanged:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then dragInput = input end end)
     TrackConnection(UserInputService.InputChanged:Connect(function(input) if not IsClosing and input == dragInput and dragging then update(input) end end))
     TrackConnection(RunService.RenderStepped:Connect(function()
@@ -248,7 +237,7 @@ function GrossHub.CreateWindow(title)
                 local displayText = player.Name .. " - " .. distance .. "m"
                 if query == "" or displayText:lower():find(query, 1, true) then
                     visiblePlayersCount = visiblePlayersCount + 1
-                    local playerButton = Create("TextButton", { Name = "Player_" .. player.UserId, Parent = ListContainer, BackgroundColor3 = Theme.Element, BackgroundTransparency = 1, BorderSizePixel = 0, Size = UDim2.new(1, 0, 0, 22), AutoButtonColor = false, Font = Enum.Font.Gotham, Text = displayText, TextColor3 = Theme.TextDark, TextSize = 12, TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left })
+                    local playerButton = Create("TextButton", { Name = "Player_" .. player.UserId, Parent = ListContainer, BackgroundColor3 = Theme.Element, BackgroundTransparency = 1, BorderSizePixel = 0, Size = UDim2.new(1, 0, 0, 22), AutoButtonColor = false, Font = Enum.Font.Gotham, Text = displayText, TextColor3 = Theme.TextDark, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left })
                     Create("UICorner", {CornerRadius = UDim.new(0, 4), Parent = playerButton})
                     Create("UIPadding", { Parent = playerButton, PaddingLeft = UDim.new(0, 6), PaddingRight = UDim.new(0, 6) })
                     PlayerButtons[player] = playerButton
@@ -373,6 +362,15 @@ function GrossHub.CreateWindow(title)
                 KeybindButton.MouseButton1Click:Connect(function() isBinding, KeybindButton.Text = true, "..." end)
                 TrackConnection(UserInputService.InputBegan:Connect(function(input, gp) if not IsClosing and isBinding and not gp then local key = (input.UserInputType == Enum.UserInputType.Keyboard) and input.KeyCode.Name or "NONE" KeybindButton.Text, isBinding = key, false callback(key) end end))
             end
+            
+            -- EXPOR AS FUNÇÕES NO OBJETO SECTION
+            Section.CreateButton = Section.CreateButton
+            Section.CreateSlider = Section.CreateSlider
+            Section.CreateToggle = Section.CreateToggle
+            Section.CreateDropdown = Section.CreateDropdown
+            Section.CreateTextBox = Section.CreateTextBox
+            Section.CreateKeybind = Section.CreateKeybind
+            
             return Section
         end
         return Tab
