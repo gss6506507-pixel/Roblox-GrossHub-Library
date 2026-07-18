@@ -24,7 +24,7 @@ local function TrackConnection(connection)
 end
 
 local function DisconnectRuntime()
-    for _, connection in ipairs(RuntimeConnections) do
+    for _, connection in ipairs(RuntimeConnections, 1) do
         if connection and connection.Connected then
             connection:Disconnect()
         end
@@ -274,10 +274,15 @@ function GrossHub.CreateWindow(title)
             Create("UICorner", {CornerRadius = UDim.new(0, 6), Parent = SectionFrame})
             Create("UIStroke", {Color = Color3.fromRGB(45, 45, 50), Thickness = 1, Parent = SectionFrame})
             table.insert(UIObjects.Sections, SectionFrame)
-            local ElementContainer = Create("Frame", {Name = "Elements", Parent = SectionFrame, BackgroundTransparency = 1, Position = UDim2.new(0, 0, 0, 35), Size = UDim2.new(1, 0, 1, -35)})
+            
+            -- TÍTULO DA SEÇÃO (ADICIONADO)
+            local SectionTitle = Create("TextLabel", { Name = "SectionTitle", Parent = SectionFrame, BackgroundTransparency = 1, Position = UDim2.new(0, 12, 0, 8), Size = UDim2.new(1, -24, 0, 18), Font = Enum.Font.GothamBold, Text = title:upper(), TextColor3 = Theme.Accent, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left })
+            
+            local ElementContainer = Create("Frame", {Name = "Elements", Parent = SectionFrame, BackgroundTransparency = 1, Position = UDim2.new(0, 0, 0, 30), Size = UDim2.new(1, 0, 1, -30)})
             local List = Create("UIListLayout", {Parent = ElementContainer, Padding = UDim.new(0, 5), SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center})
             Create("UIPadding", {Parent = ElementContainer, PaddingBottom = UDim.new(0, 10), PaddingTop = UDim.new(0, 5)})
             List:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() SectionFrame.Size = UDim2.new(1, 0, 0, List.AbsoluteContentSize.Y + 45) TabPage.CanvasSize = UDim2.new(0, 0, 0, TabPage.UIListLayout.AbsoluteContentSize.Y) end)
+            
             function Section:CreateButton(text, callback)
                 local ButtonFrame = Create("Frame", {Parent = ElementContainer, BackgroundTransparency = 1, Size = UDim2.new(1, -20, 0, 32)})
                 local Button = Create("TextButton", {Parent = ButtonFrame, BackgroundColor3 = Theme.Element, Size = UDim2.new(1, 0, 1, 0), AutoButtonColor = false, Font = Enum.Font.GothamSemibold, Text = text, TextColor3 = Theme.Text, TextSize = 13})
