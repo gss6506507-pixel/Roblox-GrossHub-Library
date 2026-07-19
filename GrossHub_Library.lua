@@ -183,8 +183,27 @@ function GrossHub.CreateWindow(title)
     local RestoreBtn = Create("ImageButton", { Name = "Restore", Parent = MinimizedFrame, BackgroundTransparency = 1, Position = UDim2.new(1, -30, 0.5, -9), Size = UDim2.new(0, 18, 0, 18), Image = "rbxassetid://15929013661", ImageColor3 = Theme.Text })
     Create("ImageLabel", { Name = "Logo", Parent = Sidebar, BackgroundTransparency = 1, Position = UDim2.new(0.5, -40, 0, 35), Size = UDim2.new(0, 80, 0, 80), Image = "rbxassetid://120694317945692" })
     local TitleLabel = Create("TextLabel", { Name = "Title", Parent = Sidebar, BackgroundTransparency = 1, Position = UDim2.new(0, 15, 0, 120), Size = UDim2.new(1, -30, 0, 30), Font = Enum.Font.GothamBold, Text = HUB_TITLE, TextColor3 = Theme.Text, TextSize = 20, TextXAlignment = Enum.TextXAlignment.Center })
-    local TabContainer = Create("ScrollingFrame", { Name = "TabContainer", Parent = Sidebar, BackgroundTransparency = 1, BorderSizePixel = 0, Position = UDim2.new(0, 0, 0, 160), Size = UDim2.new(1, 0, 1, -220), ScrollBarThickness = 0, CanvasSize = UDim2.new(0, 0, 0, 0) })
-    Create("UIListLayout", {Parent = TabContainer, Padding = UDim.new(0, 5), HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder})
+    
+    -- TAB CONTAINER COM SCROLL ATIVADO
+    local TabContainer = Create("ScrollingFrame", { 
+        Name = "TabContainer", 
+        Parent = Sidebar, 
+        BackgroundTransparency = 1, 
+        BorderSizePixel = 0, 
+        Position = UDim2.new(0, 0, 0, 160), 
+        Size = UDim2.new(1, 0, 1, -220), 
+        ScrollBarThickness = 2, -- Adicionado espessura para visualização
+        ScrollBarImageColor3 = Theme.Accent,
+        CanvasSize = UDim2.new(0, 0, 0, 0),
+        ScrollingDirection = Enum.ScrollingDirection.Y -- Garante scroll vertical
+    })
+    local TabListLayout = Create("UIListLayout", {Parent = TabContainer, Padding = UDim.new(0, 5), HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder})
+    
+    -- ATUALIZAÇÃO AUTOMÁTICA DO CANVASSIZE DAS ABAS
+    TabListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        TabContainer.CanvasSize = UDim2.new(0, 0, 0, TabListLayout.AbsoluteContentSize.Y)
+    end)
+
     local UserProfile = Create("Frame", { Name = "UserProfile", Parent = Sidebar, BackgroundColor3 = Color3.fromRGB(25, 25, 30), BorderSizePixel = 0, Position = UDim2.new(0, 0, 1, -60), Size = UDim2.new(1, 0, 0, 60) })
     local RGBLine = Create("Frame", {Name = "RGBLine", Parent = UserProfile, BackgroundColor3 = Color3.new(1,1,1), BorderSizePixel = 0, Size = UDim2.new(1, 0, 0, 2)})
     local UIGradient = Create("UIGradient", {Parent = RGBLine, Color = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)), ColorSequenceKeypoint.new(0.2, Color3.fromRGB(255, 255, 0)), ColorSequenceKeypoint.new(0.4, Color3.fromRGB(0, 255, 0)), ColorSequenceKeypoint.new(0.6, Color3.fromRGB(0, 255, 255)), ColorSequenceKeypoint.new(0.8, Color3.fromRGB(0, 0, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 255)) })})
@@ -192,7 +211,8 @@ function GrossHub.CreateWindow(title)
     local UserImage = Create("ImageLabel", {Name = "UserImage", Parent = UserProfile, BackgroundColor3 = Color3.fromRGB(35, 35, 40), Position = UDim2.new(0, 15, 0.5, -17), Size = UDim2.new(0, 35, 0, 35), Image = "rbxthumb://type=AvatarHeadShot&id="..LocalPlayer.UserId.."&w=150&h=150"})
     Create("UICorner", {CornerRadius = UDim.new(1, 0), Parent = UserImage})
     Create("TextLabel", {Name = "UserName", Parent = UserProfile, BackgroundTransparency = 1, Position = UDim2.new(0, 60, 0.5, -8), Size = UDim2.new(1, -70, 0, 16), Font = Enum.Font.GothamBold, Text = LocalPlayer.DisplayName or LocalPlayer.Name, TextColor3 = Theme.Text, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd})
-    local ListFrame = Create("Frame", { Name = "ListFrame", Parent = ScreenGui, BackgroundColor3 = Theme.Background, BorderSizePixel = 0, Position = UDim2.new(0.5, 360, 0.5, -100), Size = UDim2.new(0, 200, 0, 200), ClipsDescendants = true })
+    
+    local ListFrame = Create("Frame", { Name = "ListFrame", Parent = ScreenGui, BackgroundColor3 = Theme.Background, BorderSizePixel = 0, Position = UDim2.new(0.5, 360, 0.5, -225), Size = UDim2.new(0, 200, 0, 450), ClipsDescendants = true })
     Create("UICorner", {CornerRadius = UDim.new(0, 8), Parent = ListFrame})
     Create("UIStroke", {Color = Theme.Stroke, Thickness = 1, Parent = ListFrame})
     local ListHeader = Create("Frame", { Name = "Header", Parent = ListFrame, BackgroundColor3 = Theme.Sidebar, Size = UDim2.new(1, 0, 0, 50), BorderSizePixel = 0 })
@@ -254,7 +274,7 @@ function GrossHub.CreateWindow(title)
     Window.Destroy, Window.UpdateTheme = DestroyHub, UpdateTheme
     Window.GetSelectedPlayer = function() return SelectedPlayer end
     
-    -- FUNÇÃO DE TOGGLE UI (ADICIONADA)
+    -- FUNÇÃO DE TOGGLE UI
     function Window:SetUIToggle(keyCode)
         local key = (typeof(keyCode) == "string") and Enum.KeyCode[keyCode] or keyCode
         TrackConnection(UserInputService.InputBegan:Connect(function(input, gp)
