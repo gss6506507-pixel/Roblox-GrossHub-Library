@@ -24,7 +24,7 @@ local function TrackConnection(connection)
 end
 
 local function DisconnectRuntime()
-    for _, connection in ipairs(RuntimeConnections, 1) do
+    for _, connection in ipairs(RuntimeConnections) do
         if connection and connection.Connected then
             connection:Disconnect()
         end
@@ -253,6 +253,19 @@ function GrossHub.CreateWindow(title)
     UpdatePlayerList()
     Window.Destroy, Window.UpdateTheme = DestroyHub, UpdateTheme
     Window.GetSelectedPlayer = function() return SelectedPlayer end
+    
+    -- FUNÇÃO DE TOGGLE UI (ADICIONADA)
+    function Window:SetUIToggle(keyCode)
+        local key = (typeof(keyCode) == "string") and Enum.KeyCode[keyCode] or keyCode
+        TrackConnection(UserInputService.InputBegan:Connect(function(input, gp)
+            if not gp and input.KeyCode == key then
+                local isVisible = MainFrame.Visible
+                MainFrame.Visible, ListFrame.Visible = not isVisible, not isVisible
+                if MinimizedFrame.Visible then MinimizedFrame.Visible = false end
+            end
+        end))
+    end
+    
     local ContentArea = Create("Frame", { Name = "ContentArea", Parent = MainFrame, BackgroundTransparency = 1, Position = UDim2.new(0, 181, 0, 0), Size = UDim2.new(1, -181, 1, 0) })
     function Window:CreateTab(name, icon)
         local Tab = {}
@@ -274,15 +287,11 @@ function GrossHub.CreateWindow(title)
             Create("UICorner", {CornerRadius = UDim.new(0, 6), Parent = SectionFrame})
             Create("UIStroke", {Color = Color3.fromRGB(45, 45, 50), Thickness = 1, Parent = SectionFrame})
             table.insert(UIObjects.Sections, SectionFrame)
-            
-            -- TÍTULO DA SEÇÃO (ADICIONADO)
             local SectionTitle = Create("TextLabel", { Name = "SectionTitle", Parent = SectionFrame, BackgroundTransparency = 1, Position = UDim2.new(0, 12, 0, 8), Size = UDim2.new(1, -24, 0, 18), Font = Enum.Font.GothamBold, Text = title:upper(), TextColor3 = Theme.Accent, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left })
-            
             local ElementContainer = Create("Frame", {Name = "Elements", Parent = SectionFrame, BackgroundTransparency = 1, Position = UDim2.new(0, 0, 0, 30), Size = UDim2.new(1, 0, 1, -30)})
             local List = Create("UIListLayout", {Parent = ElementContainer, Padding = UDim.new(0, 5), SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center})
             Create("UIPadding", {Parent = ElementContainer, PaddingBottom = UDim.new(0, 10), PaddingTop = UDim.new(0, 5)})
             List:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() SectionFrame.Size = UDim2.new(1, 0, 0, List.AbsoluteContentSize.Y + 45) TabPage.CanvasSize = UDim2.new(0, 0, 0, TabPage.UIListLayout.AbsoluteContentSize.Y) end)
-            
             function Section:CreateButton(text, callback)
                 local ButtonFrame = Create("Frame", {Parent = ElementContainer, BackgroundTransparency = 1, Size = UDim2.new(1, -20, 0, 32)})
                 local Button = Create("TextButton", {Parent = ButtonFrame, BackgroundColor3 = Theme.Element, Size = UDim2.new(1, 0, 1, 0), AutoButtonColor = false, Font = Enum.Font.GothamSemibold, Text = text, TextColor3 = Theme.Text, TextSize = 13})
@@ -367,14 +376,6 @@ function GrossHub.CreateWindow(title)
                 KeybindButton.MouseButton1Click:Connect(function() isBinding, KeybindButton.Text = true, "..." end)
                 TrackConnection(UserInputService.InputBegan:Connect(function(input, gp) if not IsClosing and isBinding and not gp then local key = (input.UserInputType == Enum.UserInputType.Keyboard) and input.KeyCode.Name or "NONE" KeybindButton.Text, isBinding = key, false callback(key) end end))
             end
-            
-            Section.CreateButton = Section.CreateButton
-            Section.CreateSlider = Section.CreateSlider
-            Section.CreateToggle = Section.CreateToggle
-            Section.CreateDropdown = Section.CreateDropdown
-            Section.CreateTextBox = Section.CreateTextBox
-            Section.CreateKeybind = Section.CreateKeybind
-            
             return Section
         end
         return Tab
