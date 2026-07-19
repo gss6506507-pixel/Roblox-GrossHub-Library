@@ -1,14 +1,19 @@
--- [[ EXEMPLO DE USO V4 - GROSS HUB ]]
--- Este exemplo inclui TextBox e Keybind para demonstrar todas as funções da biblioteca.
 
+-- [[ EXEMPLO DE USO V4 - GROSS HUB ]]
+-- Este exemplo inclui a nova funcionalidade de definir a imagem do logo diretamente no CreateWindow.
+
+-- Carregando a biblioteca (Certifique-se de usar o link correto da sua biblioteca atualizada)
 local GrossHub = loadstring(game:HttpGet("https://raw.githubusercontent.com/gss6506507-pixel/Roblox-GrossHub-Library/refs/heads/main/GrossHub_Library.lua"))()
 
-local Window = GrossHub.CreateWindow("Gross Hub V4")
+-- [[ CRIAÇÃO DA JANELA ]]
+-- Agora você pode passar o ID da imagem como segundo parâmetro!
+-- Formato: Window = GrossHub.CreateWindow("Título", "rbxassetid://ID_DA_IMAGEM")
+local Window = GrossHub.CreateWindow("Gross Hub V4", "rbxassetid://120694317945692")
 
 -- [[ ABA: LOCAL PLAYER ]]
 local LocalTab = Window:CreateTab("Local Player", "rbxassetid://6026568198")
 
--- Seção de Movimento (Slider e Toggle)
+-- Seção de Movimento
 local MovementSection = LocalTab:CreateSection("Movimentação")
 
 MovementSection:CreateSlider("WalkSpeed", 16, 200, 16, function(value)
@@ -22,18 +27,15 @@ MovementSection:CreateToggle("Infinite Jump", false, function(state)
     _G.InfiniteJump = state
 end)
 
--- Seção de Utilidades (TextBox e Keybind)
+-- Seção de Utilidades
 local UtilsSection = LocalTab:CreateSection("Utilidades")
 
--- TextBox: Exemplo de mudar o nome (apenas print)
 UtilsSection:CreateTextBox("Custom Tag", "Digite algo...", function(text)
     print("Tag definida para: " .. text)
 end)
 
--- Keybind: Exemplo de tecla para fechar o menu
 UtilsSection:CreateKeybind("Self Destruct Key", "P", function(key)
     print("A tecla de auto-destruição agora é: " .. key)
-    -- Você pode usar essa variável 'key' em um loop ou evento externo
 end)
 
 -- Lógica externa para o Infinite Jump
